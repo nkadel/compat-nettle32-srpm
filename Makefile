@@ -14,7 +14,7 @@ MOCKCFGS+=samba4repo-7-x86_64
 #REPOBASEDIR=/var/www/linux/samba4repo
 REPOBASEDIR:=`/bin/pwd`/../samba4repo
 
-SPEC := libtalloc.spec
+SPEC := compat-nettle32.spec
 
 all:: $(MOCKS)
 
