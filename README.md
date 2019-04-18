@@ -13,7 +13,8 @@ for Samba compilation See this URL for the layout.
 
 compat-nettle32 is needed to build a compat-gnutls34 on RHEL 7.
 
-To build it locally, use:
+To build it locally, first obtain the tarball from the Source:
+location in the .spec file. To build it locally, use:
 
    make build
 
