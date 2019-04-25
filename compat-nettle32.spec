@@ -1,6 +1,6 @@
 Name:           compat-nettle32
 Version:        3.2
-Release:        3%{?dist}
+Release:        0.3%{?dist}
 Summary:        A low-level cryptographic library
 
 Group:          Development/Libraries
@@ -23,6 +23,7 @@ Summary:        Development headers for a low-level cryptographic library
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       gmp-devel%{?_isa}
+Conflicts:      nettle-devel
 
 %description
 Nettle is a cryptographic library that is designed to fit easily in more
@@ -122,6 +123,9 @@ fi
 
 
 %changelog
+* Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 3.2-0.3
+- Conflict with nettle-devel
+
 * Fri Jul 29 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 3.2-2
 - Imported nettle 3.2 from fedora 24.
 
