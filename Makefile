@@ -15,6 +15,9 @@ SPEC := compat-nettle32.spec
 
 all:: $(MOCKS)
 
+getsrc::
+	spectool -g $(SPEC)
+
 srpm:: FORCE
 	@echo "Building SRPM with $(SPEC)"
 	rm -rf rpmbuild
