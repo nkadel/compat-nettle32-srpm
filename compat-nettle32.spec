@@ -6,8 +6,10 @@ Summary:        A low-level cryptographic library
 Group:          Development/Libraries
 License:        LGPLv3+ or GPLv2+
 URL:            http://www.lysator.liu.se/~nisse/nettle/
+# md5sums in URL introduced vo src.redoraproject.org
 #Source0:        http://www.lysator.liu.se/~nisse/archive/%%{name}-%%{version}.tar.gz
-Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz
+#Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz
+Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz/md5/caa868f3b25f36dd197e15d08047d7e6/nettle-%{version}-hobbled.tar.xz
 Patch0:		nettle-3.1.1-remove-ecc-testsuite.patch
 Patch1:		nettle-3.2-version-h.patch
 
