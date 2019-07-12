@@ -50,8 +50,6 @@ install:: $(MOCKS)
 	    case $$repo in \
 		*-7-x86_64) yumrelease=el/7; yumarch=x86_64; ;; \
 		*-8-x86_64) yumrelease=el/8; yumarch=x86_64; ;; \
-		*-29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
-		*-f29-x86_64) yumrelease=fedora/29; yumarch=x86_64; ;; \
 		*) echo "Unrecognized release for $$repo, exiting" >&2; exit 1; ;; \
 	    esac; \
 	    rpmdir=$(REPOBASEDIR)/$$yumrelease/$$yumarch; \
