@@ -13,7 +13,7 @@ Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-h
 Patch0:		nettle-3.1.1-remove-ecc-testsuite.patch
 Patch1:		nettle-3.2-version-h.patch
 
-%if (0%{?rhel > 0 && 0%{?rhel} <= 7)
+%if (0%{?rhel} > 0 && 0%{?rhel} <= 7)
 # Addresses python36- versus python3- dependencies
 BuildRequires: epel-rpm-macros
 %endif
