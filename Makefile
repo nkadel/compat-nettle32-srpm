@@ -17,31 +17,37 @@ SPEC := `ls *.spec`
 
 all:: $(MOCKS)
 
+.PHONY: getsrc
 getsrc::
 	spectool -g $(SPEC)
 
-srpm:: FORCE
+srpm:: src.rpm
+
+#.PHONY:: src.rpm
+src.rpm:: Makefile
+	@rm -rf rpmbuild
+	@rm -f $@
 	@echo "Building SRPM with $(SPEC)"
-	rm -rf rpmbuild
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' \
 		--define '_sourcedir $(PWD)' \
 		-bs $(SPEC) --nodeps
+	mv rpmbuild/SRPMS/*.src.rpm src.rpm
 
-build:: srpm FORCE
+.PHONY: build
+build:: src.rpm
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' \
-		--rebuild rpmbuild/SRPMS/*.src.rpm
+		--rebuild $?
 
-$(MOCKS):: srpm FORCE
+.PHONY: $(MOCKS)
+$(MOCKS):: src.rpm
 	@if [ -e $@ -a -n "`find $@ -name \*.rpm`" ]; then \
 		echo "	Skipping RPM populated $@"; \
 	else \
-		echo "Storing " rpmbuild/SRPMS/*.src.rpm "as $@.src.rpm"; \
-		install rpmbuild/SRPMS/*.src.rpm $@.src.rpm; \
-		echo "Building $@.src.rpm in $@"; \
+		echo "Actally building $? in $@"; \
 		rm -rf $@; \
 		mock -q -r $(PWD)/../$@.cfg \
 		     --resultdir=$(PWD)/$@ \
-		     $@.src.rpm; \
+		     $?; \
 	fi
 
 mock:: $(MOCKS)
@@ -52,6 +58,9 @@ install:: $(MOCKS)
 	    case $$repo in \
 		*-7-x86_64) yumrelease=el/7; yumarch=x86_64; ;; \
 		*-8-x86_64) yumrelease=el/8; yumarch=x86_64; ;; \
+		*-31-x86_64) yumrelease=fedora/31; yumarch=x86_64; ;; \
+		*-f31-x86_64) yumrelease=fedora/31; yumarch=x86_64; ;; \
+		*-rawhide-x86_64) yumrelease=fedora/rawhide; yumarch=x86_64; ;; \
 		*) echo "Unrecognized release for $$repo, exiting" >&2; exit 1; ;; \
 	    esac; \
 	    rpmdir=$(REPOBASEDIR)/$$yumrelease/$$yumarch; \
@@ -70,10 +79,7 @@ install:: $(MOCKS)
 
 clean::
 	rm -rf */
-	rm -rf rpmbuild
 	rm -f *.out
-
-realclean distclean:: clean
 	rm -f *.rpm
 
-FORCE:
+realclean distclean:: clean
