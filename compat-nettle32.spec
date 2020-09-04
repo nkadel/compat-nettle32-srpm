@@ -1,6 +1,7 @@
 Name:           compat-nettle32
 Version:        3.2
-Release:        0.3%{?dist}
+#Release:        3%%{?dist}
+Release:        0.4%{?dist}
 Summary:        A low-level cryptographic library
 
 Group:          Development/Libraries
@@ -11,11 +12,6 @@ URL:            http://www.lysator.liu.se/~nisse/nettle/
 Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz/md5/caa868f3b25f36dd197e15d08047d7e6/nettle-%{version}-hobbled.tar.xz
 Patch0:		nettle-3.1.1-remove-ecc-testsuite.patch
 Patch1:		nettle-3.2-version-h.patch
-
-%if 0%{?rhel}
-# Addresses python36- versus python3- dependencies
-BuildRequires: epel-rpm-macros
-%endif
 
 BuildRequires:  gmp-devel m4 texinfo-tex
 BuildRequires:	libtool, automake, autoconf, gettext-devel
@@ -129,6 +125,9 @@ fi
 
 
 %changelog
+* Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 3.2-0.4
+- Discard BuildRequires for epel-rpm-macros 
+
 * Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 3.2-0.3
 - Conflict with nettle-devel
 
