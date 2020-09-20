@@ -1,8 +1,8 @@
 diff --git a/examples/ecc-benchmark.c b/examples/ecc-benchmark.c
-index 15df4c7..18eaae7 100644
+index 8e5e095..720d483 100644
 --- a/examples/ecc-benchmark.c
 +++ b/examples/ecc-benchmark.c
-@@ -341,8 +341,6 @@ bench_curve (const struct ecc_curve *ecc)
+@@ -330,8 +330,6 @@ bench_curve (const struct ecc_curve *ecc)
  }
  
  const struct ecc_curve * const curves[] = {
@@ -12,10 +12,10 @@ index 15df4c7..18eaae7 100644
    &nettle_secp_256r1,
    &nettle_secp_384r1,
 diff --git a/examples/hogweed-benchmark.c b/examples/hogweed-benchmark.c
-index 444d7aa..24c023e 100644
+index 3fabe20..0223fe7 100644
 --- a/examples/hogweed-benchmark.c
 +++ b/examples/hogweed-benchmark.c
-@@ -394,23 +394,6 @@ bench_ecdsa_init (unsigned size)
+@@ -393,24 +393,6 @@ bench_ecdsa_init (unsigned size)
  
    switch (size)
      {
@@ -24,7 +24,7 @@ index 444d7aa..24c023e 100644
 -      xs = "8e8e07360350fb6b7ad8370cfd32fa8c6bba785e6e200599";
 -      ys = "7f82ddb58a43d59ff8dc66053002b918b99bd01bd68d6736";
 -      zs = "f2e620e086d658b4b507996988480917640e4dc107808bdd";
--      ctx->digest = hash_string (&nettle_sha1, 3, "abc");
+-      ctx->digest = hash_string (&nettle_sha1, "abc");
 -      ctx->digest_size = 20;
 -      break;
 -    case 224:
@@ -32,31 +32,32 @@ index 444d7aa..24c023e 100644
 -      xs = "993bf363f4f2bc0f255f22563980449164e9c894d9efd088d7b77334";
 -      ys = "b75fff9849997d02d135140e4d0030944589586e22df1fc4b629082a";
 -      zs = "cdfd01838247f5de3cc70b688418046f10a2bfaca6de9ec836d48c27";
--      ctx->digest = hash_string (&nettle_sha224, 3, "abc");
+-      ctx->digest = hash_string (&nettle_sha224, "abc");
 -      ctx->digest_size = 28;
 -      break;
 -
-       /* From RFC 4754 */
+-      /* From RFC 4754 */
      case 256:
        ecc = &nettle_secp_256r1;
-@@ -582,16 +565,6 @@ bench_openssl_ecdsa_init (unsigned size)
+       xs = "2442A5CC 0ECD015F A3CA31DC 8E2BBC70 BF42D60C BCA20085 E0822CB0 4235E970";
+@@ -581,16 +563,6 @@ bench_openssl_ecdsa_init (unsigned size)
  
    switch (size)
      {
 -    case 192:
 -      ctx->key = EC_KEY_new_by_curve_name (NID_X9_62_prime192v1);
 -      ctx->digest_length = 24; /* truncated */
--      ctx->digest = hash_string (&nettle_sha224, 3, "abc");
+-      ctx->digest = hash_string (&nettle_sha224, "abc");
 -      break;
 -    case 224:
 -      ctx->key = EC_KEY_new_by_curve_name (NID_secp224r1);
 -      ctx->digest_length = SHA224_DIGEST_SIZE;
--      ctx->digest = hash_string (&nettle_sha224, 3, "abc");
+-      ctx->digest = hash_string (&nettle_sha224, "abc");
 -      break;
      case 256:
        ctx->key = EC_KEY_new_by_curve_name (NID_X9_62_prime256v1);
        ctx->digest_length = SHA256_DIGEST_SIZE;
-@@ -702,14 +675,10 @@ struct alg alg_list[] = {
+@@ -701,14 +673,10 @@ struct alg alg_list[] = {
  #if 0
    { "dsa",2048, bench_dsa_init, bench_dsa_sign,   bench_dsa_verify, bench_dsa_clear },
  #endif
@@ -145,10 +146,10 @@ index 559de8e..1ca36c2 100644
    /* From RFC 4754 */
    test_ecdsa (&nettle_secp_256r1,
 diff --git a/testsuite/testutils.c b/testsuite/testutils.c
-index 1ef04c9..b96a2fc 100644
+index 6f89761..901f62b 100644
 --- a/testsuite/testutils.c
 +++ b/testsuite/testutils.c
-@@ -1224,8 +1224,6 @@ test_dsa_key(const struct dsa_params *params,
+@@ -1212,8 +1212,6 @@ test_dsa_key(const struct dsa_params *params,
  }
  
  const struct ecc_curve * const ecc_curves[] = {
@@ -157,7 +158,7 @@ index 1ef04c9..b96a2fc 100644
    &nettle_secp_256r1,
    &nettle_secp_384r1,
    &nettle_secp_521r1,
-@@ -1282,20 +1280,6 @@ test_ecc_mul_a (unsigned curve, unsigned n, const mp_limb_t *p)
+@@ -1270,20 +1268,6 @@ test_ecc_mul_a (unsigned curve, unsigned n, const mp_limb_t *p)
  {
    /* For each curve, the points 2 g, 3 g and 4 g */
    static const struct ecc_ref_point ref[6][3] = {

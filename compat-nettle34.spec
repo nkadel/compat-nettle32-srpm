@@ -1,20 +1,28 @@
-Name:           compat-nettle32
-Version:        3.2
+%global suffix_ver 3.4
+%global __pkgconfig_path   ^((%{_libdir}|%{_datadir})/%{name}/pkgconfig/.*\.pc|%{_bindir}/pkg-config)$
+
+%global nettle_checksum /sha512/9a5b4c316222f22feb692106ceae299c2b59229ef96cac1739095c65c9ddee4b1d542579e5b49d4863bd6a8c093611f0fdd1c7cb3251844c85b7e089e406ffc5
+
+Name:           compat-nettle34
+Version:        3.4.1
 #Release:        3%%{?dist}
-Release:        0.4%{?dist}
+Release:        0%{?dist}
 Summary:        A low-level cryptographic library
 
 Group:          Development/Libraries
 License:        LGPLv3+ or GPLv2+
 URL:            http://www.lysator.liu.se/~nisse/nettle/
-# md5sums in URL introduced vo src.redoraproject.org
 #Source0:        http://www.lysator.liu.se/~nisse/archive/%%{name}-%%{version}.tar.gz
-Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz/md5/caa868f3b25f36dd197e15d08047d7e6/nettle-%{version}-hobbled.tar.xz
-Patch0:		nettle-3.1.1-remove-ecc-testsuite.patch
-Patch1:		nettle-3.2-version-h.patch
+# sha512 checksums in URL introduced vo src.redoraproject.org
+Source0:	https://src.fedoraproject.org/lookaside/pkgs/nettle/nettle-%{version}-hobbled.tar.xz%{?nettle_checksum}/nettle-%{version}-hobbled.tar.xz
+Patch0:		nettle-3.3-remove-ecc-testsuite.patch
+Patch1:		nettle-3.4.1-c99.patch
 
 BuildRequires:  gmp-devel m4 texinfo-tex
 BuildRequires:	libtool, automake, autoconf, gettext-devel
+Provides:       nettle = %{version}-%{release}
+Provides:       compat-nettle32 = %{version}-%{release}
+Obsoletes:      compat-nettle32 < %{version}-%{release}
 
 Requires(post): info
 Requires(preun): info
@@ -57,32 +65,38 @@ autoreconf -ifv
 
 
 %install
+mkdir -p %{buildroot}/etc/profile.d/
+cat > %{buildroot}/etc/profile.d/%{name}.sh <<EOF
+export export PKG_CONFIG_PATH=/usr/lib64/compat-nettle34/pkgconfig/
+EOF
+
 make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
 make install-shared DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
 #mkdir -p $RPM_BUILD_ROOT%{_infodir}
-#install -p -m 644 nettle.info $RPM_BUILD_ROOT%{_infodir}/nettle-3.2.info
+#install -p -m 644 nettle.info $RPM_BUILD_ROOT%{_infodir}/nettle-%{suffix_ver}.info
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 chmod 0755 $RPM_BUILD_ROOT%{_libdir}/libnettle.so.6.*
 chmod 0755 $RPM_BUILD_ROOT%{_libdir}/libhogweed.so.4.*
 
 # Rename some files to avoid conflicts with base packages
-mv $RPM_BUILD_ROOT%{_infodir}/nettle.info $RPM_BUILD_ROOT%{_infodir}/nettle-3.2.info
-mv $RPM_BUILD_ROOT%{_bindir}/nettle-lfib-stream $RPM_BUILD_ROOT%{_bindir}/nettle-lfib-stream-3.2
-mv $RPM_BUILD_ROOT%{_bindir}/pkcs1-conv $RPM_BUILD_ROOT%{_bindir}/pkcs1-conv-3.2
-mv $RPM_BUILD_ROOT%{_bindir}/sexp-conv $RPM_BUILD_ROOT%{_bindir}/sexp-conv-3.2
-mv $RPM_BUILD_ROOT%{_bindir}/nettle-hash $RPM_BUILD_ROOT%{_bindir}/nettle-hash-3.2
-mv $RPM_BUILD_ROOT%{_bindir}/nettle-pbkdf2 $RPM_BUILD_ROOT%{_bindir}/nettle-pbkdf2-3.2
+mv $RPM_BUILD_ROOT%{_infodir}/nettle.info $RPM_BUILD_ROOT%{_infodir}/nettle-%{suffix_ver}.info
+mv $RPM_BUILD_ROOT%{_bindir}/nettle-lfib-stream $RPM_BUILD_ROOT%{_bindir}/nettle-lfib-stream-%{suffix_ver}
+mv $RPM_BUILD_ROOT%{_bindir}/pkcs1-conv $RPM_BUILD_ROOT%{_bindir}/pkcs1-conv-%{suffix_ver}
+mv $RPM_BUILD_ROOT%{_bindir}/sexp-conv $RPM_BUILD_ROOT%{_bindir}/sexp-conv-%{suffix_ver}
+mv $RPM_BUILD_ROOT%{_bindir}/nettle-hash $RPM_BUILD_ROOT%{_bindir}/nettle-hash-%{suffix_ver}
+mv $RPM_BUILD_ROOT%{_bindir}/nettle-pbkdf2 $RPM_BUILD_ROOT%{_bindir}/nettle-pbkdf2-%{suffix_ver}
 
 mkdir -p $RPM_BUILD_ROOT%{_includedir}/%{name}
 mv $RPM_BUILD_ROOT%{_includedir}/nettle $RPM_BUILD_ROOT%{_includedir}/%{name}/
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/
-#mv $RPM_BUILD_ROOT%{_libdir}/libnettle.so $RPM_BUILD_ROOT%{_libdir}/%{name}
-#mv $RPM_BUILD_ROOT%{_libdir}/libhogweed.so $RPM_BUILD_ROOT%{_libdir}/%{name}
 mv $RPM_BUILD_ROOT%{_libdir}/pkgconfig/nettle.pc $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/
 mv $RPM_BUILD_ROOT%{_libdir}/pkgconfig/hogweed.pc $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/
 sed -r -i 's#^(includedir=.*)#\1/%{name}#' $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/nettle.pc
 sed -r -i 's#^(includedir=.*)#\1/%{name}#' $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/hogweed.pc
+
+#mv $RPM_BUILD_ROOT%{_libdir}/libnettle.so $RPM_BUILD_ROOT%{_libdir}/%{name}
+#mv $RPM_BUILD_ROOT%{_libdir}/libhogweed.so $RPM_BUILD_ROOT%{_libdir}/%{name}
 #sed -r -i 's#^(libdir=.*)#\1/%{name}#' $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/nettle.pc
 #sed -r -i 's#^(libdir=.*)#\1/%{name}#' $RPM_BUILD_ROOT%{_libdir}/%{name}/pkgconfig/hogweed.pc
 
@@ -92,12 +106,12 @@ make check
 %files
 %doc AUTHORS NEWS README TODO
 %license COPYINGv2 COPYING.LESSERv3
-%{_infodir}/nettle-3.2.info.gz
-%{_bindir}/nettle-lfib-stream-3.2
-%{_bindir}/pkcs1-conv-3.2
-%{_bindir}/sexp-conv-3.2
-%{_bindir}/nettle-hash-3.2
-%{_bindir}/nettle-pbkdf2-3.2
+%{_infodir}/nettle-%{suffix_ver}.info.gz
+%{_bindir}/nettle-lfib-stream-%{suffix_ver}
+%{_bindir}/pkcs1-conv-%{suffix_ver}
+%{_bindir}/sexp-conv-%{suffix_ver}
+%{_bindir}/nettle-hash-%{suffix_ver}
+%{_bindir}/nettle-pbkdf2-%{suffix_ver}
 %{_libdir}/libnettle.so.6
 %{_libdir}/libnettle.so.6.*
 %{_libdir}/libhogweed.so.4
@@ -110,14 +124,15 @@ make check
 %dir %{_libdir}/%{name}/pkgconfig
 %{_libdir}/%{name}/pkgconfig/*.pc
 %{_libdir}/lib*.so
+/etc/profile.d/%{name}.sh
 
 %post
-/sbin/install-info %{_infodir}/nettle-3.2.info %{_infodir}/dir || :
+/sbin/install-info %{_infodir}/nettle-%{suffix_ver}.info %{_infodir}/dir || :
 /sbin/ldconfig
 
 %preun
 if [ $1 = 0 ]; then
-  /sbin/install-info --delete %{_infodir}/nettle-3.2.info %{_infodir}/dir || :
+  /sbin/install-info --delete %{_infodir}/nettle-%{suffix_ver}.info %{_infodir}/dir || :
 fi
 
 %postun -p /sbin/ldconfig
@@ -125,11 +140,12 @@ fi
 
 
 %changelog
-* Sat Sep 5 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 3.2-0.4
-- Discard BuildRequires for epel-rpm-macros 
-
-* Thu Apr 25 2019 Nico Kadel-Garcia <nkadel@gmail.com> - 3.2-0.3
+* Sat Sep 20 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 3.4.1-0
 - Conflict with nettle-devel
+
+* Sun Sep 13 2020 Sérgio Basto <sergio@serjux.com> - 3.4.1-3
+- Improve packaging using pkgconfig and add export PKG_CONFIG_PATH
+  (in /etc/profile.d/%{name}.sh)
 
 * Fri Jul 29 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 3.2-2
 - Imported nettle 3.2 from fedora 24.
