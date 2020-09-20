@@ -5,8 +5,7 @@
 
 Name:           compat-nettle34
 Version:        3.4.1
-#Release:        3%%{?dist}
-Release:        0%{?dist}
+Release:        4%%{?dist}
 Summary:        A low-level cryptographic library
 
 Group:          Development/Libraries
@@ -34,6 +33,8 @@ Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       gmp-devel%{?_isa}
 Conflicts:      nettle-devel
+Provides:       compat-nettle32-devel = %{version}-%{release}
+Obsoletes:      compat-nettle32-devel < %{version}-%{release}
 
 %description
 Nettle is a cryptographic library that is designed to fit easily in more
@@ -138,10 +139,10 @@ fi
 %postun -p /sbin/ldconfig
 
 
-
 %changelog
-* Sat Sep 20 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 3.4.1-0
+* Sat Sep 20 2020 Nico Kadel-Garcia <nkadel@gmail.com> - 3.4.1-4
 - Conflict with nettle-devel
+- Add checksums to Source URL
 
 * Sun Sep 13 2020 Sérgio Basto <sergio@serjux.com> - 3.4.1-3
 - Improve packaging using pkgconfig and add export PKG_CONFIG_PATH
