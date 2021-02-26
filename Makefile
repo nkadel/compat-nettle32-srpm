@@ -9,7 +9,8 @@ LANG=C
 #MOCKS+=epel-7-x86_64
 MOCKS+=amazonlinux-2-x86_64
 
-#MOCKCFGS+=samba4repo-7-x86_64
+# mock configs to tourh after insallation
+MOCKCFGS+=$(MOCKS)
 MOCKCFGS+=samba4repo-amz2-x86_64
 
 #REPOBASEDIR=/var/www/linux/samba4repo
